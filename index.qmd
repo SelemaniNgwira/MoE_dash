@@ -14,7 +14,7 @@ library(plotly)
 
 library(reactable)
 library(bslib)
-pacman::p_load(bsicons, shiny, ggspark, sparkline)
+pacman::p_load(bsicons, shiny, ggspark, sparkline, tsibble)
 
 
 
@@ -110,15 +110,102 @@ ggplotly(plot1)
 
 ```{r}
 
-plot(cars)
+date_report<- c( 
+            "2024-05-01",
+            "2024-06-01",
+            "2024-07-01",
+            "2024-08-01",
+            "2024-09-01",
+            "2024-10-01",
+            "2024-11-01", 
+            "2024-12-01", 
+            "2025-01-01", 
+            "2025-02-01", 
+            "2025-03-01", 
+            "2025-04-01"
+               )
+
+date_report <- seq.Date(from = as.Date("2024-05-01"), by = "week", length.out = 52)
+
+
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+incidance_rate <- sample(1:14, length(date_report), replace = TRUE)
+
+
+pregnancy_incidence<- data.frame(date_report= date_report, incidance_rate = incidance_rate)
+
+
+
+pregnancy_incidence<- pregnancy_incidence |> 
+  mutate(date_report=as.Date(date_report))
+
+
+pregnancy_incidence <- tibble(pregnancy_incidence, index=date_report)
+
+plot2<- pregnancy_incidence |> 
+  ggplot(aes(x = date_report, y = incidance_rate)) +
+  geom_line() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  labs(x = "Month", y = "Incidence Rate", title = "School Pregnancy Incidence Over Time") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+ggplotly(plot2)
 
 ```
 
 
 
 ```{r}
+date_report<- c( 
+            "2024-05-01",
+            "2024-06-01",
+            "2024-07-01",
+            "2024-08-01",
+            "2024-09-01",
+            "2024-10-01",
+            "2024-11-01", 
+            "2024-12-01", 
+            "2025-01-01", 
+            "2025-02-01", 
+            "2025-03-01", 
+            "2025-04-01"
+               )
 
-plot(women)
+date_report <- seq.Date(from = as.Date("2024-05-01"), by = "week", length.out = 52)
+
+
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+incidance_rate <- sample(0:12, length(date_report), replace = TRUE)
+
+
+pregnancy_incidence<- data.frame(date_report= date_report, incidance_rate = incidance_rate)
+
+
+
+pregnancy_incidence<- pregnancy_incidence |> 
+  mutate(date_report=as.Date(date_report))
+
+
+pregnancy_incidence <- tibble(pregnancy_incidence, index=date_report)
+
+plot2<- pregnancy_incidence |> 
+  ggplot(aes(x = date_report, y = incidance_rate)) +
+  geom_line() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  labs(x = "Month", y = "School drop out  Rate", 
+       title = "Dropout rate due to pregnancy Over Time") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+ggplotly(plot2)
+
 
 ```
 
@@ -138,7 +225,7 @@ districts <- c("Balaka", "Chikwawa", "Chiradzulu", "Chitipa", "Dedza", "Dowa",
 
 # Generate random numbers (e.g., between 1 and 100)
 set.seed(123)  # for reproducibility
-random_numbers <- sample(1:100, length(districts), replace = TRUE)
+random_numbers <- sample(60:90, length(districts), replace = TRUE)
 
 # Combine into a data frame
 district_data <- data.frame(District = districts, RandomValue = random_numbers)
@@ -153,8 +240,8 @@ plot1<- district_data |>
     axis.text.x = element_text(angle = 90)
   )+
   labs(
-    y= "% of schools implementing CSE", 
-    title = "CSE impelemention in school per District in Malawi", 
+    y= "% Student knowledge improvement rate", 
+    title = "Student knowledge improvement rate in school per District in Malawi", 
     subtitle = "Jan- April 2025", 
     x="District"
   )
@@ -222,7 +309,7 @@ districts <- c("Balaka", "Chikwawa", "Chiradzulu", "Chitipa", "Dedza", "Dowa",
 
 # Generate random numbers (e.g., between 1 and 100)
 set.seed(123)  # for reproducibility
-random_numbers <- sample(1:100, length(districts), replace = TRUE)
+random_numbers <- sample(20:80, length(districts), replace = TRUE)
 
 # Combine into a data frame
 district_data <- data.frame(District = districts, RandomValue = random_numbers)
@@ -237,8 +324,8 @@ plot1<- district_data |>
     axis.text.x = element_text(angle = 90)
   )+
   labs(
-    y= "% of schools implementing CSE", 
-    title = "CSE impelemention in school per District in Malawi", 
+    y= "% HIV testing uptake", 
+    title = "HIV testing uptake in school per District in Malawi", 
     subtitle = "Jan- April 2025", 
     x="District"
   )
@@ -261,7 +348,7 @@ districts <- c("Balaka", "Chikwawa", "Chiradzulu", "Chitipa", "Dedza", "Dowa",
 
 # Generate random numbers (e.g., between 1 and 100)
 set.seed(123)  # for reproducibility
-random_numbers <- sample(1:100, length(districts), replace = TRUE)
+random_numbers <- sample(60:100, length(districts), replace = TRUE)
 
 # Combine into a data frame
 district_data <- data.frame(District = districts, RandomValue = random_numbers)
@@ -276,8 +363,8 @@ plot1<- district_data |>
     axis.text.x = element_text(angle = 90)
   )+
   labs(
-    y= "% of schools implementing CSE", 
-    title = "CSE impelemention in school per District in Malawi", 
+    y= "% Teacher CSE training coverage", 
+    title = "Teacher CSE training coverage in school per District in Malawi", 
     subtitle = "Jan- April 2025", 
     x="District"
   )
