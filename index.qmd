@@ -106,7 +106,7 @@ ggplotly(plot1)
 ```
 
 
-### Tab 1 {.tabset}
+### Trends 1 {.tabset}
 
 ```{r}
 
