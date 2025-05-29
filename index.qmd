@@ -1,0 +1,290 @@
+---
+title: "Ministry of Education HIV/AIDS Sexuality Education Dashboard"
+format: dashboard
+---
+
+
+
+```{r}
+
+
+library(tidyverse)
+
+library(plotly)
+
+library(reactable)
+library(bslib)
+pacman::p_load(bsicons, shiny, ggspark, sparkline)
+
+
+
+```
+
+
+# Overview of key Indicators
+
+## Row{height=25%}
+
+
+
+```{r}
+
+
+
+value_box(
+  title = "Data completeness rate",
+  value = tags$div("80", class = "value-box-value"),
+  showcase = bs_icon("percent"),
+  theme = "text-success", 
+  showcase_layout = "top right"
+)
+
+```
+
+
+
+### 
+
+```{r}
+value_box(
+  title = "Timeliness of CSE data reporting",
+  value = "80",
+  showcase = bsicons::bs_icon("percent"), 
+  theme = "text-success", 
+  showcase_layout = "top right"
+  
+)
+
+
+```
+
+
+
+
+## Row 
+
+### Tab {width=60%}
+
+```{r}
+
+indicators <- c( "schools implementing CSE",
+                "Student knowledge improvement rate",
+                "HIV testing uptake",
+                "GBV cases reported",
+                "Condom availability",
+                "Teacher CSE training coverage",
+                "Dropout rate due to pregnancy"
+               )
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+random_numbers <- sample(50:90, length(indicators), replace = TRUE)
+
+# Combine into a data frame
+district_data <- data.frame(indicators = indicators, RandomValue = random_numbers)
+
+
+
+plot1<- district_data |> 
+  ggplot(aes(reorder( x=indicators, RandomValue), y=RandomValue))+
+  geom_col(fill="tomato")+
+  coord_flip()+
+  theme_classic()+
+  theme(
+    axis.text.x = element_text(angle = 0)
+  )+
+  labs(
+    y= "Percentage of indicators ", 
+    title = "Over performance of indicators", 
+    subtitle = "Jan- April 2025", 
+    x="Indicator Name"
+  )
+
+
+ggplotly(plot1)
+
+```
+
+
+### Tab 1 {.tabset}
+
+```{r}
+
+plot(cars)
+
+```
+
+
+
+```{r}
+
+plot(women)
+
+```
+
+
+# Indicators per District
+
+## Row{height=50%}
+
+
+
+```{r}
+districts <- c("Balaka", "Chikwawa", "Chiradzulu", "Chitipa", "Dedza", "Dowa",
+               "Karonga", "Kasungu", "Likoma", "Lilongwe", "Machinga", "Mangochi",
+               "Mchinji", "Mulanje", "Mzimba", "Nkhata Bay", "Nkhota kota", "Nsanje",
+               "Ntcheu", "Ntchisi", "Phalombe", "Rumphi", "Salima", "Thyolo", "Zomba",
+               "Blantyre", "Neno", "Mwanza")
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+random_numbers <- sample(1:100, length(districts), replace = TRUE)
+
+# Combine into a data frame
+district_data <- data.frame(District = districts, RandomValue = random_numbers)
+
+
+
+plot1<- district_data |> 
+  ggplot(aes(reorder( x=District, RandomValue), y=RandomValue))+
+  geom_col(fill="tomato")+
+  theme_classic()+
+  theme(
+    axis.text.x = element_text(angle = 90)
+  )+
+  labs(
+    y= "% of schools implementing CSE", 
+    title = "CSE impelemention in school per District in Malawi", 
+    subtitle = "Jan- April 2025", 
+    x="District"
+  )
+
+
+ggplotly(plot1)
+
+
+```
+
+
+
+### 
+
+```{r}
+districts <- c("Balaka", "Chikwawa", "Chiradzulu", "Chitipa", "Dedza", "Dowa",
+               "Karonga", "Kasungu", "Likoma", "Lilongwe", "Machinga", "Mangochi",
+               "Mchinji", "Mulanje", "Mzimba", "Nkhata Bay", "Nkhota kota", "Nsanje",
+               "Ntcheu", "Ntchisi", "Phalombe", "Rumphi", "Salima", "Thyolo", "Zomba",
+               "Blantyre", "Neno", "Mwanza")
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+random_numbers <- sample(1:100, length(districts), replace = TRUE)
+
+# Combine into a data frame
+district_data <- data.frame(District = districts, RandomValue = random_numbers)
+
+
+
+plot1<- district_data |> 
+  ggplot(aes(reorder( x=District, RandomValue), y=RandomValue))+
+  geom_col(fill="tomato")+
+  theme_classic()+
+  theme(
+    axis.text.x = element_text(angle = 90)
+  )+
+  labs(
+    y= "% of schools implementing CSE", 
+    title = "CSE impelemention in school per District in Malawi", 
+    subtitle = "Jan- April 2025", 
+    x="District"
+  )
+
+
+ggplotly(plot1)
+
+
+```
+
+
+
+
+## Row 
+
+### Tab {width=50%}
+
+```{r}
+
+districts <- c("Balaka", "Chikwawa", "Chiradzulu", "Chitipa", "Dedza", "Dowa",
+               "Karonga", "Kasungu", "Likoma", "Lilongwe", "Machinga", "Mangochi",
+               "Mchinji", "Mulanje", "Mzimba", "Nkhata Bay", "Nkhota kota", "Nsanje",
+               "Ntcheu", "Ntchisi", "Phalombe", "Rumphi", "Salima", "Thyolo", "Zomba",
+               "Blantyre", "Neno", "Mwanza")
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+random_numbers <- sample(1:100, length(districts), replace = TRUE)
+
+# Combine into a data frame
+district_data <- data.frame(District = districts, RandomValue = random_numbers)
+
+
+
+plot1<- district_data |> 
+  ggplot(aes(reorder( x=District, RandomValue), y=RandomValue))+
+  geom_col(fill="tomato")+
+  theme_classic()+
+  theme(
+    axis.text.x = element_text(angle = 90)
+  )+
+  labs(
+    y= "% of schools implementing CSE", 
+    title = "CSE impelemention in school per District in Malawi", 
+    subtitle = "Jan- April 2025", 
+    x="District"
+  )
+
+
+ggplotly(plot1)
+
+```
+
+
+### 
+
+```{r}
+
+districts <- c("Balaka", "Chikwawa", "Chiradzulu", "Chitipa", "Dedza", "Dowa",
+               "Karonga", "Kasungu", "Likoma", "Lilongwe", "Machinga", "Mangochi",
+               "Mchinji", "Mulanje", "Mzimba", "Nkhata Bay", "Nkhota kota", "Nsanje",
+               "Ntcheu", "Ntchisi", "Phalombe", "Rumphi", "Salima", "Thyolo", "Zomba",
+               "Blantyre", "Neno", "Mwanza")
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+random_numbers <- sample(1:100, length(districts), replace = TRUE)
+
+# Combine into a data frame
+district_data <- data.frame(District = districts, RandomValue = random_numbers)
+
+
+
+plot1<- district_data |> 
+  ggplot(aes(reorder( x=District, RandomValue), y=RandomValue))+
+  geom_col(fill="tomato")+
+  theme_classic()+
+  theme(
+    axis.text.x = element_text(angle = 90)
+  )+
+  labs(
+    y= "% of schools implementing CSE", 
+    title = "CSE impelemention in school per District in Malawi", 
+    subtitle = "Jan- April 2025", 
+    x="District"
+  )
+
+
+ggplotly(plot1)
+
+```
+
+
