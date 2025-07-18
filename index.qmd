@@ -190,7 +190,7 @@ ggplotly(plot1)
 
 
 
-### Trends 1 {.tabset}
+### Spatial distribution of cases and control {.tabset}
 
 ```{r}
 
