@@ -1,6 +1,7 @@
 ---
-title: "Chloracne Study progress Dashboard"
-format: dashboard
+title: "Untitled"
+format: html
+editor: visual
 ---
 
 
@@ -17,44 +18,8 @@ library(bslib)
 pacman::p_load(bsicons, shiny, ggspark, sparkline, tsibble)
 
 
-pacman::p_load(tidyverse, here, summarytools, janitor, sf, tmap,OpenStreetMap, 
-               rio, robotoolbox)
-
 
 ```
-
-
-
-
-```{r}
-
-# 
-token<-kobo_token(
-  username = "phim",
-  password = "mpox@2025",
-  url= "https://kf.kobotoolbox.org")
-
-
-# setting up the link 
-
-kobo_setup(url = "https://kf.kobotoolbox.org", token = token)
-
-# listing the projects in the kobo account
-my_account_project<-kobo_asset_list()
-
-# getting UID of the interet project by number
-study_id<-my_account_project$uid[2]
-
-# getting the file of the cholera study project
-study_data<-kobo_asset(study_id)
-
-# getting the actual cholera data set
-study_data<-kobo_data(study_data)
-
-
-```
-
-
 
 
 # Overview of key Indicators
@@ -62,17 +27,14 @@ study_data<-kobo_data(study_data)
 ## Row{height=25%}
 
 
+
 ```{r}
 
-total<- study_data |> 
-  count(Pid)|> 
-  summarise(total=sum(n), 
-            total=round(total/140, digits = 3)*100)
 
 
 value_box(
-  title = "Completeness",
-  value = tags$div(total$total, class = "value-box-value"),
+  title = "Data completeness rate",
+  value = tags$div("80", class = "value-box-value"),
   showcase = bs_icon("percent"),
   theme = "text-success", 
   showcase_layout = "top right"
@@ -85,24 +47,11 @@ value_box(
 ### 
 
 ```{r}
-
-cases<- study_data|> 
-       select(ill_sts) |> 
-       filter(ill_sts=="case") |> 
-       count()
-
-# define the thems 
-
-cases_them<-value_box_theme(
-  bg="white", 
-  fg="red"
-)
-
 value_box(
-  title = "Number of cases enrolled",
-  value = cases,
-  showcase = bsicons::bs_icon("person-dash"), 
-  theme = cases_them, 
+  title = "Timeliness of CSE data reporting",
+  value = "80",
+  showcase = bsicons::bs_icon("percent"), 
+  theme = "text-success", 
   showcase_layout = "top right"
   
 )
@@ -110,36 +59,6 @@ value_box(
 
 ```
 
-
-
-
-### 
-
-```{r}
-
-control<- study_data|> 
-       select(ill_sts) |> 
-       filter(ill_sts=="control") |> 
-       count()
-
-# define the thems 
-
-control_them<-value_box_theme(
-  bg="white", 
-  fg="green"
-)
-
-value_box(
-  title = "Number of Controls enrolled",
-  value = control,
-  showcase = bsicons::bs_icon("person-fill-add"), 
-  theme = control_them, 
-  showcase_layout = "top right"
-  
-)
-
-
-```
 
 
 
@@ -149,31 +68,38 @@ value_box(
 
 ```{r}
 
-theme_set(theme_minimal())
+indicators <- c( "schools implementing CSE",
+                "Student knowledge improvement rate",
+                "HIV testing uptake",
+                "GBV cases reported",
+                "Condom availability",
+                "Teacher CSE training coverage",
+                "Dropout rate due to pregnancy"
+               )
+
+# Generate random numbers (e.g., between 1 and 100)
+set.seed(123)  # for reproducibility
+random_numbers <- sample(50:90, length(indicators), replace = TRUE)
+
+# Combine into a data frame
+district_data <- data.frame(indicators = indicators, RandomValue = random_numbers)
 
 
-dis_case_contr <- study_data |> 
-  select(Dist, ill_sts) |> 
-  group_by(Dist, ill_sts) |> 
-  count(ill_sts) |> 
-  summarise(precent=round(n/sum(n)))
 
-
-dis_case_contr$Dist<-str_to_title(dis_case_contr$Dist)
-
-plot1 <- ggplot(dis_case_contr, mapping= aes( y=Dist, x=precent, fill = ill_sts))+
-  geom_col(position = "dodge")+
+plot1<- district_data |> 
+  ggplot(aes(reorder( x=indicators, RandomValue), y=RandomValue))+
+  geom_col(fill="tomato")+
+  coord_flip()+
+  theme_classic()+
+  theme(
+    axis.text.x = element_text(angle = 0)
+  )+
   labs(
-    y="District Name", 
-    x="Number of enrrollment", 
-    
-    title = "Number of study enrollment per district"
+    y= "Percentage of indicators ", 
+    title = "Over performance of indicators", 
+    subtitle = "Jan- April 2025", 
+    x="Indicator Name"
   )
-  
-
-
-
-
 
 
 ggplotly(plot1)

@@ -1,0 +1,151 @@
+---
+title: "cholera study"
+author: "PHIM-Research division"
+date: "2024-12-11"
+output: html_document
+---
+
+```{r setup, include=FALSE, loading package}
+knitr::opts_chunk$set(echo = TRUE)
+
+#the following code line will install pacman package if pacman is not install
+if(!require(pacman) ) install.packages("pacman")
+
+#the following code will install the require package if not install/ and load them, if they are already install it will only load them.  
+pacman::p_load(tidyverse, here, summarytools, janitor, sf, tmap,OpenStreetMap, 
+               rio, robotoolbox)
+  
+```
+
+## linking R with Kobo serve
+
+under this section you will link up the R-studio work environment with your kobo serve. change the user name and password. I have used my server details e.g 
+
+```{r cars}
+# setting up the link by getting a token
+# 
+token<-kobo_token(
+  username = "selemani_ngwira",
+  password = "Ungweru@0518",
+  url= "https://kf.kobotoolbox.org")
+
+
+# setting up the link 
+
+kobo_setup(url = "https://kf.kobotoolbox.org", token = token)
+
+# listing the projects in the kobo account
+my_account_project<-kobo_asset_list()
+
+# getting UID of the interet project by number
+cholera_study_id<-my_account_project$uid[2]
+
+# getting the file of the cholera study project
+cholera_study<-kobo_asset(cholera_study_id)
+
+# getting the actual cholera data set
+cholera_study<-kobo_data(cholera_study)
+
+
+
+
+
+```
+
+
+# Clean 
+
+```{r}
+
+```
+
+
+
+
+# Actual Analysis 
+
+## Descriptive Analysis 
+
+```{r}
+
+# Demographic Freq----
+
+
+## Age 
+
+
+
+
+
+
+
+# Social Culture----
+
+
+
+
+
+
+# Oral Cholera Vaccination freq----
+
+
+
+
+
+
+
+# WASH freq----
+
+
+
+
+
+```
+
+
+## Inference Analysis
+
+
+```{r}
+
+
+# OR----
+
+
+
+
+
+# Regression ----
+
+
+
+
+
+
+
+# Multivariate ----
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
