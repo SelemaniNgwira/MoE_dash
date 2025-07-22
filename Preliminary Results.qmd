@@ -1,0 +1,215 @@
+---
+title: "Preliminary Results"
+format: html
+---
+
+```{r}
+#| echo: false
+
+
+
+library(tidyverse)
+
+library(plotly)
+
+library(reactable)
+library(bslib)
+pacman::p_load(bsicons, shiny, ggspark, sparkline, tsibble)
+
+
+pacman::p_load(tidyverse, here, summarytools, janitor, sf, tmap,OpenStreetMap, 
+               rio, robotoolbox)
+
+
+
+
+# loading data in R from Kobo server 
+
+# 
+token<-kobo_token(
+  username = "phim",
+  password = "mpox@2025",
+  url= "https://kf.kobotoolbox.org")
+
+
+# setting up the link 
+
+kobo_setup(url = "https://kf.kobotoolbox.org", token = token)
+
+# listing the projects in the kobo account
+my_account_project<-kobo_asset_list()
+
+# getting UID of the interet project by number
+study_id<-my_account_project$uid[1]
+
+# getting the file of the cholera study project
+study_data<-kobo_asset(study_id)
+
+# getting the actual cholera data set
+study_data<-kobo_data(study_data)
+
+df1<- study_data$main
+
+```
+
+
+
+The number of study subjects recruited as of 21th July 2025 is `r df1|>count(PID)|>  summarise(sum(n))` (`r df1|>count(PID)|>summarise(sum(n))/140*100`) out of 140 the sample size estimated. The chart below show the distribution of the recruitment based on case and control category. 
+```{r}
+#| echo: false
+
+df1 |> 
+  select(Illness_status) |> 
+  group_by(Illness_status) |> 
+  mutate(Illness_status = recode(Illness_status,
+                                  `1` = "Case",
+                                  `2` = "Control")) |>
+  count() |> 
+  ggplot( mapping = aes(x=Illness_status, y=n))+
+  geom_col(fill="steelblue")+
+  labs(
+    y="Number of study subject recruited", 
+    x="Illness Status", 
+    title = "Chlorance Study subject recruited ", 
+    subtitle = " as of 21-7-2025"
+  )+
+  geom_label(aes(label = n), 
+             nudge_y = -2)+
+  theme_classic()+
+  theme(axis.text.x = element_text(size = 12, color = "black"), 
+        axis.text.y = element_text(size = 12, color = "black"))
+
+
+```
+
+Distribution of the study subject by Sex
+
+```{r}
+#| echo: false
+
+df1 |> 
+  select(Illness_status, Sex) |> 
+  group_by(Illness_status, Sex) |> 
+  mutate(Illness_status = recode(Illness_status,
+                                  `1` = "Case",
+                                  `2` = "Control"), 
+         Sex = recode(Sex,`1` = "Male",     `2` = "Female")) |>
+  count(Illness_status) |> 
+
+ 
+  ggplot( mapping = aes(x=Illness_status, y=n, fill=Sex))+
+  geom_col()+
+  labs(
+    y="Number of study subject recruited", 
+    x="Illness Status", 
+    title = "Chlorance Study subject recruited ", 
+    subtitle = " as of 21-7-2025"
+  )+
+  geom_label(aes(label = n), 
+             nudge_y = +1.5)+
+  theme_classic()+
+  theme(axis.text.x = element_text(size = 12, color = "black"), 
+        axis.text.y = element_text(size = 12, color = "black"))
+
+```
+
+
+Distribution of the study subject by Districts 
+
+```{r}
+#| echo: false
+
+plot1<- df1 |> 
+  select(Illness_status, District) |> 
+  group_by(District, Illness_status) |> 
+  mutate(Illness_status = recode(Illness_status,
+                                  `1` = "Case",
+                                  `2` = "Control"), 
+         District= recode(District,
+                      `1`= "Blantyre",
+                       `2`= "Thyolo",
+                       `3`= "Chiradzulu",
+                      `4` = "Zomba")
+         ) |> 
+  count(Illness_status) |> 
+  summarise(cases=sum(n)) |> 
+  mutate(Precentage= cases/sum(cases))
+
+plot1 |> 
+  select(-Precentage) |> 
+  pivot_wider(
+    names_from = Illness_status,
+    values_from = cases) |> 
+  flextable::flextable()
+  
+  
+
+
+plot1 |> 
+  ggplot(aes(x = District, y = Precentage, fill = Illness_status)) +
+geom_col(position = position_fill())+
+  geom_text(aes(label =scales::percent(Precentage,accuracy =1))
+            ,position =position_fill(vjust =0.5),color ="white",
+            fontface ="bold",
+            size =4.5)+
+    theme_light()+
+    coord_flip()
+  
+
+
+```
+
+T-test of the age difference between cases and control
+
+
+```{r}
+#| echo: false
+
+df2<- df1 |> 
+  select(Illness_status, Age) |> 
+   mutate(Illness_status = recode(Illness_status,
+                                  `1` = "Case",
+                                  `2` = "Control"))
+
+
+# Convert to proper format if needed
+df1 <- df1 |>
+  mutate(Illness_status = as_factor(Illness_status))  # ensure it's a factor
+
+# Perform independent t-test
+t_test_result <- t.test(Age ~ Illness_status, data = df1)
+
+# Print result
+print(t_test_result)
+
+
+```
+
+Duration of the questionnaire 
+
+```{r}
+#| echo: false
+
+Q_dura <- df1 |> 
+  select(start, end) |> 
+  mutate(duration=round(end-start)) |> 
+   mutate(duration=as.numeric(duration)) |> 
+  filter(duration<=100)
+
+ 
+
+hist(Q_dura$duration)
+
+mean(Q_dura$duration)
+
+max(Q_dura$duration)
+
+
+ggplot(data = Q_dura, mapping = aes(x=end, y=duration))+
+  geom_point()+
+  theme_classic()
+
+
+
+```
+

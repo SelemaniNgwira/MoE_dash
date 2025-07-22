@@ -43,13 +43,15 @@ kobo_setup(url = "https://kf.kobotoolbox.org", token = token)
 my_account_project<-kobo_asset_list()
 
 # getting UID of the interet project by number
-study_id<-my_account_project$uid[2]
+study_id<-my_account_project$uid[1]
 
 # getting the file of the cholera study project
 study_data<-kobo_asset(study_id)
 
 # getting the actual cholera data set
 study_data<-kobo_data(study_data)
+
+study_data<- study_data$main
 
 
 ```
@@ -202,13 +204,16 @@ ggplotly(plot1)
 #   rename(district=ADM2_EN)
 # 
 team_move<- study_data |>
-  select( ill_sts,
-    gps_hh_latitude,
-    gps_hh_longitude
+  select( Illness_status,
+    GPS_longitude,
+    GPS_latitude
   ) |>
-     drop_na() %>%
-  sf::st_as_sf(coords = c("gps_hh_longitude",
-                          "gps_hh_latitude"),
+   mutate(Illness_status = recode(Illness_status,
+                                  `1` = "Case",
+                                  `2` = "Control")) |> 
+  drop_na() %>%
+  sf::st_as_sf(coords = c("GPS_longitude",
+                          "GPS_latitude"),
                crs = 4326)
 # 
 # 
@@ -222,7 +227,7 @@ tmap_mode("view")
 #   tm_text("district", 
 #           size = 0.5)+
   tm_shape(team_move)+
-  tm_dots(col = "ill_sts")
+  tm_dots(col = "Illness_status")
   
   
 
