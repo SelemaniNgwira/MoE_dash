@@ -27,8 +27,18 @@ pacman::p_load(bsicons,
                robotoolbox)
 
 
-# loading data in the R environment 
 
+
+
+
+
+
+```
+
+
+
+# loading data in the R environment 
+```{r}
 chlorance_data<-import(here("data", "Chloracne_data.xlsx" )) |> 
   clean_names() |> # standarized the column names within the data. 
   select(-c(start,
@@ -44,10 +54,8 @@ chlorance_data<-import(here("data", "Chloracne_data.xlsx" )) |>
             uuid,
             tags,
             index))
-
-
-
 ```
+
 
 
 # rename of variable 
@@ -75,12 +83,50 @@ chlorance_data<- chlorance_data |>
    altitude=x7_record_the_gps_of_the_household_or_where_the_interview_is_taking_place_altitude,
    precision=x7_record_the_gps_of_the_household_or_where_the_interview_is_taking_place_precision,
    residence_duration=x8_how_long_have_you_been_a_resident_in_this_area_in_years
-   
   )
 
 
 
 
+prefixes_to_remove <- c(
+  "x176_which_medical_tests_were_done_select_all_that_apply_",
+  "where_do_you_", 
+  "_what_is_your_", 
+  "x49_where_do_you_get_your_soft_drinks_select_all_that_apply_",
+  "_where_do_you_source_your_alcohol_select_all_that_apply_",
+  "x111_at_your_workplace_have_you_ever_been_", 
+  "x112_at_your_workplace_have_you_ever_been_",
+  "x113_at_your_workplace_have_you_ever_been_", 
+  "x114_at_your_workplace_have_you_ever_been_", 
+  "at_your_workplace_have_you_ever_been_", 
+  "x46_where_do_you_source_your_alcohol_select_all_that_apply_"
+)
+
+
+chlorance_data <- reduce(
+  prefixes_to_remove,
+  function(df, prefix) {
+    # Get names before renaming
+    old_names <- names(df)
+    
+    # Get columns matching the prefix
+    target_cols <- grep(paste0("^", prefix), old_names, value = TRUE)
+    
+    # Create new names for only those columns
+    new_names <- old_names
+    new_names[old_names %in% target_cols] <- target_cols %>%
+      sub(paste0("^", prefix), "", .) %>%         # Remove prefix
+      str_remove_all("[0-9]+")                    # Remove numbers
+
+    # Ensure new names are unique
+    new_names <- make.unique(new_names)
+    
+    # Apply to dataframe
+    names(df) <- new_names
+    df
+  },
+  .init = chlorance_data
+)
 
 ```
 
