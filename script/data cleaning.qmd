@@ -1,0 +1,88 @@
+---
+title: "data cleaning"
+format: html
+---
+# Loading packages 
+
+```{r}
+#| echo: false
+
+pacman::p_load(bsicons, 
+               shiny,
+               ggspark,
+               sparkline,
+               tsibble,
+               bslib,
+               reactable,
+               plotly,
+               tidyverse, 
+               tidyverse,
+               here,
+               summarytools,
+               janitor,
+               sf,
+               tmap,
+               OpenStreetMap, 
+               rio, 
+               robotoolbox)
+
+
+# loading data in the R environment 
+
+chlorance_data<-import(here("data", "Chloracne_data.xlsx" )) |> 
+  clean_names() |> # standarized the column names within the data. 
+  select(-c(start,
+            end, 
+            interviewer_id,
+            id, 
+            submission_time, 
+            validation_status, 
+            version, 
+            notes,
+            status,
+            submitted_by,
+            uuid,
+            tags,
+            index))
+
+
+
+```
+
+
+# rename of variable 
+
+
+```{r}
+# the data set has 482 variables, you need to shorten the names of the variables 
+
+# the package were are using for rename the variable is the tidverse
+
+chlorance_data<- chlorance_data |> 
+  rename(
+   participant_id=x1_participant_id, 
+   age=x2_age_in_years, 
+   sex=x3_sex, 
+   interview_location=x4_interview_location, 
+   other_location=specify_location, 
+   religion=x4_religion, 
+   other_religion=if_selected_other_please_specify,
+   education=x5_what_is_the_highest_level_of_education_attended, 
+   village=x6_name_of_the_village,
+   gps=x7_record_the_gps_of_the_household_or_where_the_interview_is_taking_place,
+   latitude=x7_record_the_gps_of_the_household_or_where_the_interview_is_taking_place_latitude,
+   longitude=x7_record_the_gps_of_the_household_or_where_the_interview_is_taking_place_longitude,
+   altitude=x7_record_the_gps_of_the_household_or_where_the_interview_is_taking_place_altitude,
+   precision=x7_record_the_gps_of_the_household_or_where_the_interview_is_taking_place_precision,
+   residence_duration=x8_how_long_have_you_been_a_resident_in_this_area_in_years
+   
+  )
+
+
+
+
+
+```
+
+
+
